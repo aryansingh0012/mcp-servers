@@ -30,10 +30,8 @@ if __package__ in {None, ""}:
     from sdlc_harness.implementation_tracking import (
         assess_implementation_progress,
         record_implementation_evidence,
-        write_sphinx_progress_report,
     )
     from sdlc_harness.loopback import record_loopback
-    from sdlc_harness.needs_reader import NeedsReader
 else:
     from .artifact_writer import (
         assess_sdlc_issue,
@@ -44,17 +42,15 @@ else:
     from .implementation_tracking import (
         assess_implementation_progress,
         record_implementation_evidence,
-        write_sphinx_progress_report,
     )
     from .loopback import record_loopback
-    from .needs_reader import NeedsReader
 
 TOOLS = [
     {
         "name": "record_implementation_evidence",
         "description": (
-            "Link a completed, blocked, failed, or in-progress task to Sphinx "
-            "need IDs, source files, and real test results."
+            "Link a completed, blocked, failed, or in-progress task to "
+            "requirement IDs, source files, and real test results."
         ),
         "inputSchema": {
             "type": "object",
@@ -85,7 +81,7 @@ TOOLS = [
     {
         "name": "assess_implementation_progress",
         "description": (
-            "Report task completion percentage, linked source files, Sphinx need IDs, "
+            "Report task completion percentage, linked source files, requirement IDs, "
             "and test evidence."
         ),
         "inputSchema": {
@@ -95,22 +91,6 @@ TOOLS = [
                 "stage_dir": {"type": "string", "default": ".stage"},
             },
             "required": ["issue_id"],
-        },
-    },
-    {
-        "name": "write_sphinx_progress_report",
-        "description": (
-            "Write an RST progress report with a task table and sphinx-needs "
-            "needflow diagram."
-        ),
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "issue_id": {"type": "string"},
-                "report_path": {"type": "string"},
-                "stage_dir": {"type": "string", "default": ".stage"},
-            },
-            "required": ["issue_id", "report_path"],
         },
     },
     {
@@ -145,11 +125,6 @@ TOOLS = [
             },
             "required": ["issue_id", "title", "requirement"],
         },
-    },
-    {
-        "name": "trace_need",
-        "description": "Trace a sphinx-needs ID.",
-        "inputSchema": {"type": "object", "required": ["need_id", "needs_json_path"]},
     },
     {
         "name": "write_stage_artifact",
@@ -197,12 +172,6 @@ def call_tool(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         return assess_implementation_progress(
             arguments["issue_id"], arguments.get("stage_dir", ".stage")
         )
-    if name == "write_sphinx_progress_report":
-        return write_sphinx_progress_report(
-            arguments["issue_id"],
-            arguments["report_path"],
-            arguments.get("stage_dir", ".stage"),
-        )
     if name == "assess_sdlc_issue":
         return assess_sdlc_issue(
             arguments["issue_id"], arguments.get("stage_dir", ".stage")
@@ -214,8 +183,6 @@ def call_tool(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
             arguments["requirement"],
             arguments.get("stage_dir", ".stage"),
         )
-    if name == "trace_need":
-        return NeedsReader(arguments["needs_json_path"]).trace(arguments["need_id"])
     if name == "write_stage_artifact":
         return write_stage_artifact(
             arguments["issue_id"],
