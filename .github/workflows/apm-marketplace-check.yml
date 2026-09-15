@@ -60,6 +60,8 @@ jobs:
             --name eclipse-score-apm-marketplace --ref "$MCP_REF"
           apm install context-discipline@eclipse-score-apm-marketplace \
             --target vscode --trust-transitive-mcp
+          apm install sdlc-harness@eclipse-score-apm-marketplace \
+            --target vscode --trust-transitive-mcp
           python - <<'PY'
           import json
           import os

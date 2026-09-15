@@ -13,7 +13,7 @@
 
 name: sdlc-harness
 version: 0.1.0
-description: SDLC lifecycle guidance and sphinx-needs traceability for AI agents in Eclipse S-CORE.
+description: SDLC lifecycle guidance and implementation evidence for AI agents in Eclipse S-CORE.
 license: Apache-2.0
 targets:
   - copilot
