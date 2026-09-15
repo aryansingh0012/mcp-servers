@@ -7,8 +7,8 @@ sdlc-harness is a local MCP server package that enforces a traceable SDLC workfl
 
 1. Build structured stage artifacts from a requirement.
 2. Check stage preconditions before moving forward.
-4. Record implementation evidence per task.
-6. Record loopbacks when implementation invalidates an earlier-stage decision.
+3. Record implementation evidence per task.
+4. Record loopbacks when implementation invalidates an earlier-stage decision.
 
 The package is deterministic and file-backed. No cloud calls are made by the tools.
 
@@ -20,8 +20,6 @@ This is an implementation-level README for the package. It documents:
 2. Every MCP tool and the Python function it dispatches to.
 3. Function-by-function behavior, input contracts, outputs, and error conditions.
 4. Prompt guidance in .apm/instructions and .apm/skills.
-5. Sphinx and sphinx-needs integration details.
-6. Test coverage and what behaviors are verified.
 
 ## Package Structure
 
@@ -46,10 +44,6 @@ packages/sdlc-harness/
     artifact_writer.py
     implementation_tracking.py
     loopback.py
-  tests/
-    test_artifact_writer.py
-    test_implementation_tracking.py
-    test_loopback.py
 ```
 
 ## Runtime Architecture
@@ -232,15 +226,6 @@ Computes:
 5. Test totals and passed counts.
 6. Findings for incomplete tasks, missing evidence, and failing/blocked tests.
 
-3. write_sphinx_progress_report(issue_id, report_path, stage_dir=.stage)
-
-Builds RST report containing:
-
-1. SPDX header.
-2. Issue title and completion summary.
-3. list-table section for task evidence.
-4. needflow directive with filter built from linked requirement ids.
-
 Internal helpers:
 
 1. _read_evidence
@@ -251,9 +236,6 @@ Builds issue findings from evidence and test statuses.
 
 3. _percentage
 Rounded completion percentage.
-
-4. _task_table_lines
-Builds RST list-table rows from evidence entries.
 
 ### src/sdlc_harness/loopback.py
 
@@ -283,21 +265,21 @@ The package exposes seven MCP tools:
 
 1. record_implementation_evidence
 2. assess_implementation_progress
-4. assess_sdlc_issue
-5. bootstrap_sdlc_issue
-7. write_stage_artifact
-8. record_loopback
-9. check_stage_completeness
+3. assess_sdlc_issue
+4. bootstrap_sdlc_issue
+5. write_stage_artifact
+6. record_loopback
+7. check_stage_completeness
 
 Tool dispatch map in serve.py:
 
 1. record_implementation_evidence -> implementation_tracking.record_implementation_evidence
 2. assess_implementation_progress -> implementation_tracking.assess_implementation_progress
-4. assess_sdlc_issue -> artifact_writer.assess_sdlc_issue
-5. bootstrap_sdlc_issue -> artifact_writer.bootstrap_sdlc_issue
-7. write_stage_artifact -> artifact_writer.write_stage_artifact
-8. record_loopback -> loopback.record_loopback
-9. check_stage_completeness -> artifact_writer.check_stage_completeness
+3. assess_sdlc_issue -> artifact_writer.assess_sdlc_issue
+4. bootstrap_sdlc_issue -> artifact_writer.bootstrap_sdlc_issue
+5. write_stage_artifact -> artifact_writer.write_stage_artifact
+6. record_loopback -> loopback.record_loopback
+7. check_stage_completeness -> artifact_writer.check_stage_completeness
 
 ## Stage Artifact Layout
 
@@ -335,10 +317,7 @@ Instruction files:
 1. .apm/instructions/sdlc-lifecycle-stages.instructions.md
 Defines staged lifecycle behavior, draft replacement requirement, assessment gate, and implementation evidence expectations.
 
-2. .apm/instructions/sphinx-needs-traceability.instructions.md
-Forbids guessing need ids and requires trace_need against current needs.json.
-
-3. .apm/instructions/loopback-detection.instructions.md
+2. .apm/instructions/loopback-detection.instructions.md
 Requires record_loopback when implementation exposes upstream gaps.
 
 Skill files:
@@ -349,13 +328,10 @@ Workflow for starting issue artifacts from one requirement.
 2. write-stage-artifact/SKILL.md
 Workflow to check prerequisites then write artifacts.
 
-3. trace-sphinx-need/SKILL.md
-Workflow to query and apply linked need ids.
+3. track-implementation-progress/SKILL.md
+Workflow to record implementation evidence continuously and assess progress.
 
-4. track-implementation-progress/SKILL.md
-Workflow to record implementation evidence continuously, assess progress, and publish RST progress report.
-
-5. detect-loopback/SKILL.md
+4. detect-loopback/SKILL.md
 Workflow to log lifecycle loopbacks and stop if logging fails.
 
 Important integration note:
@@ -375,9 +351,7 @@ Important integration note:
 
 5. Run assess_implementation_progress before review.
 
-6. Emit RST status report with write_sphinx_progress_report.
-
-7. If implementation reveals upstream gap, run record_loopback and update affected artifact before proceeding.
+6. If implementation reveals upstream gap, run record_loopback and update affected artifact before proceeding.
 
 ## Error Handling And Contracts
 
@@ -388,33 +362,9 @@ Protocol-level behavior:
 
 Tool-level behavior examples:
 
-1. Missing needs.json path -> FileNotFoundError via trace_need.
-2. Unknown artifact type or stage enum -> ValueError.
-3. Unknown implementation status -> ValueError.
-4. Missing task file for evidence recording -> ValueError.
-5. Missing need id in loaded graph -> normal result with error field.
-
-## Test Coverage
-
-tests/test_artifact_writer.py verifies:
-
-1. Numbered artifact path output and SPDX insertion.
-2. Completeness check detects missing prerequisites.
-3. Task numbering increments.
-4. bootstrap_sdlc_issue creates full draft set and rejects non-empty issue dirs.
-5. assess_sdlc_issue flags placeholders, missing dependency analysis, and missing repository evidence.
-
-tests/test_implementation_tracking.py verifies:
-
-1. Evidence recording for task entries.
-2. Progress percentage and missing-evidence detection.
-3. Linked requirement/source file reporting.
-
-tests/test_loopback.py verifies:
-
-1. Review marker insertion into affected artifact.
-2. Loopback log append behavior.
-3. Result payload path fields.
+1. Unknown artifact type or stage enum -> ValueError.
+2. Unknown implementation status -> ValueError.
+3. Missing task file for evidence recording -> ValueError.
 
 ## Local Validation Commands
 
@@ -422,7 +372,6 @@ Run from repository root:
 
 ```powershell
 $env:PYTHONPATH = "$PWD\packages\sdlc-harness\src"
-uv run pytest packages/sdlc-harness/tests -q
 uv run ruff check packages/sdlc-harness
 uv run python -m compileall -q packages/sdlc-harness/src
 apm marketplace check --offline
