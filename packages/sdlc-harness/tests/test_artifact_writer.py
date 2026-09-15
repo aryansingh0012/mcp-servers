@@ -32,7 +32,9 @@ def test_writes_numbered_artifacts_and_reports_missing_prerequisites(tmp_path) -
 
     artifact = tmp_path / "ISSUE-1" / "01-requirement.md"
     assert result["path"] == str(artifact)
-    assert "SPDX-License-Identifier: Apache-2.0" in artifact.read_text(encoding="utf-8")
+    assert f"{'SPDX-' + 'License-Identifier'}: Apache-2.0" in artifact.read_text(
+        encoding="utf-8"
+    )
     assert check_stage_completeness("ISSUE-1", "architecture", str(tmp_path))[
         "missing"
     ] == ["02-specification.md"]

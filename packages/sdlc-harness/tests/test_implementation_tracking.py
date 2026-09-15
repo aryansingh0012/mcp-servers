@@ -15,11 +15,10 @@ from sdlc_harness.artifact_writer import bootstrap_sdlc_issue
 from sdlc_harness.implementation_tracking import (
     assess_implementation_progress,
     record_implementation_evidence,
-    write_sphinx_progress_report,
 )
 
 
-def test_tracks_task_progress_and_writes_sphinx_report(tmp_path) -> None:
+def test_tracks_task_progress(tmp_path) -> None:
     bootstrap_sdlc_issue("ISSUE-181", "Field support", "Support fields.", str(tmp_path))
     record_implementation_evidence(
         "ISSUE-181",
@@ -33,8 +32,6 @@ def test_tracks_task_progress_and_writes_sphinx_report(tmp_path) -> None:
     )
 
     progress = assess_implementation_progress("ISSUE-181", str(tmp_path))
-    report_path = tmp_path / "docs" / "implementation-progress.rst"
-    report = write_sphinx_progress_report("ISSUE-181", str(report_path), str(tmp_path))
 
     assert progress["tasks"] == {
         "total": 3,
@@ -45,7 +42,3 @@ def test_tracks_task_progress_and_writes_sphinx_report(tmp_path) -> None:
     assert progress["requirements"]["linked"] == ["REQ-181"]
     assert progress["source_files"]["linked"] == ["score/generic_skeleton_field.cpp"]
     assert progress["tests"]["passed"] == 1
-    assert report["path"] == str(report_path)
-    text = report_path.read_text(encoding="utf-8")
-    assert ".. needflow:: Requirement implementation trace" in text
-    assert "REQ-181" in text

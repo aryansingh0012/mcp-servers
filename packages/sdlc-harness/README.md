@@ -7,9 +7,7 @@ sdlc-harness is a local MCP server package that enforces a traceable SDLC workfl
 
 1. Build structured stage artifacts from a requirement.
 2. Check stage preconditions before moving forward.
-3. Trace Sphinx needs from needs.json.
 4. Record implementation evidence per task.
-5. Generate Sphinx RST progress reports with needflow output.
 6. Record loopbacks when implementation invalidates an earlier-stage decision.
 
 The package is deterministic and file-backed. No cloud calls are made by the tools.
@@ -36,24 +34,20 @@ packages/sdlc-harness/
   .apm/
     instructions/
       sdlc-lifecycle-stages.instructions.md
-      sphinx-needs-traceability.instructions.md
       loopback-detection.instructions.md
     skills/
       bootstrap-sdlc-issue/SKILL.md
       write-stage-artifact/SKILL.md
-      trace-sphinx-need/SKILL.md
       track-implementation-progress/SKILL.md
       detect-loopback/SKILL.md
   src/sdlc_harness/
     __init__.py
     serve.py
     artifact_writer.py
-    needs_reader.py
     implementation_tracking.py
     loopback.py
   tests/
     test_artifact_writer.py
-    test_needs_reader.py
     test_implementation_tracking.py
     test_loopback.py
 ```
@@ -86,7 +80,7 @@ Declares the MCP tool contract as schema metadata for APM consumers.
 Key points:
 
 1. entry_point is sdlc_harness.serve.
-2. Nine tools are declared.
+2. Seven tools are declared.
 3. Schemas define required fields and enum constraints.
 
 ### src/sdlc_harness/__init__.py
@@ -205,41 +199,6 @@ Converts status results into human-readable blocking findings.
 7. _section_content
 Regex-based section extractor for Markdown heading blocks.
 
-### src/sdlc_harness/needs_reader.py
-
-Loads sphinx-needs needs.json and resolves trace information for a single need id.
-
-Data model:
-
-1. NeedNode dataclass
-Represents one need node with common fields and extra residual fields.
-
-Reader behavior:
-
-1. Constructor validates file exists.
-2. Reads JSON using utf-8-sig to tolerate optional BOM.
-3. Requires versions map and selects max key as latest export.
-4. Materializes each need into NeedNode.
-
-Public functions:
-
-1. get(need_id)
-Returns NeedNode or None.
-
-2. trace(need_id)
-Returns:
-
-- links_forward from node.links
-- links_back from node.links_back
-- all_linked_by inferred by scanning all nodes whose links include need_id
-
-If need is missing, returns error payload in normal tool result.
-
-Helper:
-
-1. _node_summary
-Returns compact node projection for trace responses.
-
 ### src/sdlc_harness/implementation_tracking.py
 
 Records task evidence and computes implementation progress metrics.
@@ -320,14 +279,12 @@ Behavior:
 
 ## MCP Tool Reference
 
-The package exposes nine MCP tools:
+The package exposes seven MCP tools:
 
 1. record_implementation_evidence
 2. assess_implementation_progress
-3. write_sphinx_progress_report
 4. assess_sdlc_issue
 5. bootstrap_sdlc_issue
-6. trace_need
 7. write_stage_artifact
 8. record_loopback
 9. check_stage_completeness
@@ -336,10 +293,8 @@ Tool dispatch map in serve.py:
 
 1. record_implementation_evidence -> implementation_tracking.record_implementation_evidence
 2. assess_implementation_progress -> implementation_tracking.assess_implementation_progress
-3. write_sphinx_progress_report -> implementation_tracking.write_sphinx_progress_report
 4. assess_sdlc_issue -> artifact_writer.assess_sdlc_issue
 5. bootstrap_sdlc_issue -> artifact_writer.bootstrap_sdlc_issue
-6. trace_need -> needs_reader.NeedsReader(...).trace(...)
 7. write_stage_artifact -> artifact_writer.write_stage_artifact
 8. record_loopback -> loopback.record_loopback
 9. check_stage_completeness -> artifact_writer.check_stage_completeness
@@ -408,33 +363,6 @@ Important integration note:
 1. Registering only .vscode/mcp.json exposes tools but does not automatically load .apm behavioral guidance.
 2. Install or compile APM package to apply instructions and skills to agent behavior.
 
-## Sphinx And sphinx-needs Integration
-
-### needs.json input for trace_need
-
-1. Build your docs using Sphinx with sphinx-needs enabled.
-2. Use the generated needs.json path when calling trace_need.
-3. Rebuild docs whenever source need definitions change.
-
-Reader expectations:
-
-1. JSON must include versions map.
-2. Latest version key is selected lexically using max(versions).
-
-### RST report output from write_sphinx_progress_report
-
-Generated report includes:
-
-1. Implementation summary heading.
-2. Evidence table (task/status/files/tests).
-3. needflow directive filtered to requirement ids recorded in evidence.
-
-To render report:
-
-1. Place report path inside Sphinx source directory.
-2. Add report file to a toctree.
-3. Build docs with sphinx_needs extension configured.
-
 ## End-To-End Workflow Example
 
 1. Start staged issue from requirement.
@@ -476,18 +404,11 @@ tests/test_artifact_writer.py verifies:
 4. bootstrap_sdlc_issue creates full draft set and rejects non-empty issue dirs.
 5. assess_sdlc_issue flags placeholders, missing dependency analysis, and missing repository evidence.
 
-tests/test_needs_reader.py verifies:
-
-1. Latest version selection from versions map.
-2. Forward and reverse trace output structure.
-3. UTF-8 with BOM reading behavior.
-
 tests/test_implementation_tracking.py verifies:
 
 1. Evidence recording for task entries.
 2. Progress percentage and missing-evidence detection.
 3. Linked requirement/source file reporting.
-4. RST report creation with needflow section.
 
 tests/test_loopback.py verifies:
 
@@ -516,4 +437,4 @@ Quick stdio MCP handshake test:
 
 ## License
 
-Apache License 2.0 (SPDX-License-Identifier: Apache-2.0)
+Apache License 2.0

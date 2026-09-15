@@ -147,4 +147,4 @@ No changes needed—local optimization is self-contained.
 
 ## License
 
-Apache License 2.0 (SPDX-License-Identifier: Apache-2.0)
+Apache License 2.0

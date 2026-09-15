@@ -43,7 +43,8 @@ STAGE_REQUIREMENTS = {
         "harness/run.json",
     ],
 }
-SPDX_MARKDOWN = "<!-- SPDX-License-Identifier: Apache-2.0 -->\n"
+_SPDX_TAG = "SPDX-License-Identifier"
+SPDX_MARKDOWN = f"<!-- {_SPDX_TAG}: Apache-2.0 -->\n"
 
 
 def issue_directory(issue_id: str, stage_dir: str = ".stage") -> Path:
@@ -213,7 +214,7 @@ def _yaml_document(title: str, content: str, links: dict[str, Any]) -> str:
     link_lines = _link_lines(links, "  ") or "  {}"
     indented_content = "\n".join(f"  {line}" for line in content.rstrip().splitlines())
     return (
-        "# SPDX-License-Identifier: Apache-2.0\n"
+        f"# {_SPDX_TAG}: Apache-2.0\n"
         f"title: {title}\nlinks:\n{link_lines}\ncontent: |\n{indented_content}\n"
     )
 

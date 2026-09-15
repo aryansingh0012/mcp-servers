@@ -108,38 +108,6 @@ def assess_implementation_progress(
     }
 
 
-def write_sphinx_progress_report(
-    issue_id: str, report_path: str, stage_dir: str = ".stage"
-) -> dict[str, str]:
-    """Write an RST report with a progress table and sphinx-needs flow directive."""
-    progress = assess_implementation_progress(issue_id, stage_dir)
-    report = Path(report_path)
-    report.parent.mkdir(parents=True, exist_ok=True)
-    task_lines = _task_table_lines(issue_id, progress, stage_dir)
-    requirement_ids = progress["requirements"]["linked"]
-    need_filter = " or ".join(f"id == '{need_id}'" for need_id in requirement_ids)
-    report.write_text(
-        ".. SPDX-License-Identifier: Apache-2.0\n\n"
-        f"{issue_id} Implementation Progress\n"
-        f"{'=' * (len(issue_id) + 24)}\n\n"
-        "Task completion: "
-        f"{progress['tasks']['completed']}/{progress['tasks']['total']} "
-        f"({progress['tasks']['percentage']}%).\n\n"
-        ".. list-table:: Implementation evidence\n"
-        "   :header-rows: 1\n\n"
-        "   * - Task\n"
-        "     - Status\n"
-        "     - Source files\n"
-        "     - Tests\n"
-        f"{task_lines}\n"
-        ".. needflow:: Requirement implementation trace\n"
-        "\n"
-        f"   :filter: {need_filter or 'False'}\n",
-        encoding="utf-8",
-    )
-    return {"ok": "true", "path": str(report)}
-
-
 def _read_evidence(path: Path) -> dict[str, list[dict[str, Any]]]:
     if not path.is_file():
         return {"entries": []}

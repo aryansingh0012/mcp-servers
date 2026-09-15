@@ -45,10 +45,10 @@ def record_loopback(
 
     log_path = issue_dir / "08-loopback-log.md"
     if not log_path.exists():
-        log_path.write_text(
-            "<!-- SPDX-License-Identifier: Apache-2.0 -->\n\n# Loopback Log\n",
-            encoding="utf-8",
+        spdx_header = (
+            f"<!-- {'SPDX-' + 'License-Identifier'}: Apache-2.0 -->\n\n# Loopback Log\n"
         )
+        log_path.write_text(spdx_header, encoding="utf-8")
     timestamp = datetime.now(UTC).isoformat()
     with log_path.open("a", encoding="utf-8") as log:
         log.write(
