@@ -117,9 +117,7 @@ def write_sphinx_progress_report(
     report.parent.mkdir(parents=True, exist_ok=True)
     task_lines = _task_table_lines(issue_id, progress, stage_dir)
     requirement_ids = progress["requirements"]["linked"]
-    need_filter = " or ".join(
-        f"id == '{need_id}'" for need_id in requirement_ids
-    )
+    need_filter = " or ".join(f"id == '{need_id}'" for need_id in requirement_ids)
     report.write_text(
         ".. SPDX-License-Identifier: Apache-2.0\n\n"
         f"{issue_id} Implementation Progress\n"

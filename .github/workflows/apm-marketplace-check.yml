@@ -52,11 +52,12 @@ jobs:
 
       - name: Test remote marketplace MCP servers
         env:
+          MCP_REPO: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
           MCP_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           smoke_dir="$(mktemp -d)"
           cd "$smoke_dir"
-          apm marketplace add https://github.com/eclipse-score/mcp-servers \
+          apm marketplace add "https://github.com/${MCP_REPO}" \
             --name eclipse-score-apm-marketplace --ref "$MCP_REF"
           apm install context-discipline@eclipse-score-apm-marketplace \
             --target vscode --trust-transitive-mcp
@@ -73,10 +74,11 @@ jobs:
           for server in config["servers"].values():
               args = server.get("args", [])
               for index, argument in enumerate(args):
-                  if argument.startswith("git+https://github.com/eclipse-score/mcp-servers#"):
+                  source_prefix = f"git+https://github.com/{os.environ['MCP_REPO']}#"
+                  if argument.startswith(source_prefix):
                       args[index] = argument.replace(
-                          "git+https://github.com/eclipse-score/mcp-servers#",
-                          f"git+https://github.com/eclipse-score/mcp-servers@{revision}#",
+                      source_prefix,
+                      f"git+https://github.com/{os.environ['MCP_REPO']}@{revision}#",
                           1,
                       )
           config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")

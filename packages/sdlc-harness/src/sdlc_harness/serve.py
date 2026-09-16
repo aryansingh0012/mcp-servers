@@ -98,8 +98,7 @@ TOOLS = [
     {
         "name": "write_sphinx_progress_report",
         "description": (
-            "Write an RST progress report with a task table and "
-            "sphinx-needs needflow."
+            "Write an RST progress report with a task table and sphinx-needs needflow."
         ),
         "inputSchema": {
             "type": "object",
@@ -272,7 +271,9 @@ def handle(request: dict[str, Any]) -> str | None:
         except (KeyError, OSError, TypeError, ValueError) as exc:
             return response(request_id, error={"code": -32000, "message": str(exc)})
         except Exception as exc:
-            return response(request_id, error={"code": -32000, "message": f"Internal error: {exc}"})
+            return response(
+                request_id, error={"code": -32000, "message": f"Internal error: {exc}"}
+            )
     return response(
         request_id, error={"code": -32601, "message": f"Unknown method: {method}"}
     )
