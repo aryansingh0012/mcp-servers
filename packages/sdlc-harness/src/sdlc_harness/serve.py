@@ -245,8 +245,10 @@ def handle(request: dict[str, Any]) -> str | None:
             return response(
                 request_id, {"content": [{"type": "text", "text": json.dumps(result)}]}
             )
-        except (KeyError, OSError, ValueError) as exc:
+        except (KeyError, OSError, TypeError, ValueError) as exc:
             return response(request_id, error={"code": -32000, "message": str(exc)})
+        except Exception as exc:
+            return response(request_id, error={"code": -32000, "message": f"Internal error: {exc}"})
     return response(
         request_id, error={"code": -32601, "message": f"Unknown method: {method}"}
     )
@@ -255,11 +257,23 @@ def handle(request: dict[str, Any]) -> str | None:
 def main() -> None:
     """Serve newline-delimited JSON-RPC requests over standard I/O."""
     for line in sys.stdin:
-        if line.strip():
+        if not line.strip():
+            continue
+        try:
             output = handle(json.loads(line))
-            if output is not None:
-                sys.stdout.write(output + "\n")
-                sys.stdout.flush()
+        except (json.JSONDecodeError, TypeError) as exc:
+            output = response(
+                None,
+                error={"code": -32700, "message": f"Invalid JSON-RPC request: {exc}"},
+            )
+        except Exception as exc:
+            output = response(
+                None,
+                error={"code": -32603, "message": f"Server error: {exc}"},
+            )
+        if output is not None:
+            sys.stdout.write(output + "\n")
+            sys.stdout.flush()
 
 
 if __name__ == "__main__":
