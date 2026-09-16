@@ -71,15 +71,15 @@ jobs:
           config_path = Path(".vscode/mcp.json")
           config = json.loads(config_path.read_text(encoding="utf-8"))
           revision = os.environ["MCP_REF"]
+            repository = os.environ["MCP_REPO"]
           for server in config["servers"].values():
               args = server.get("args", [])
               for index, argument in enumerate(args):
-                  source_prefix = f"git+https://github.com/{os.environ['MCP_REPO']}#"
-                  if argument.startswith(source_prefix):
+                if argument.startswith("git+https://github.com/") and "#" in argument:
+                  subdirectory = argument.split("#", 1)[1]
                       args[index] = argument.replace(
-                      source_prefix,
-                      f"git+https://github.com/{os.environ['MCP_REPO']}@{revision}#",
-                          1,
+                    argument,
+                    f"git+https://github.com/{repository}@{revision}#{subdirectory}",
                       )
           config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
           PY
