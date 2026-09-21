@@ -13,7 +13,7 @@ Use this skill when the user provides a new requirement and wants the complete S
 2. Call `bootstrap_sdlc_issue` once with the issue ID, title, and requirement text.
 3. Read the generated artifacts and inspect the repository before replacing any `[DRAFT]` content.
 4. Update specification, architecture, plan, and tasks with repository-grounded decisions.
-5. Do not write `harness/run.json` until real implementation tests have run.
+5. Do not write `harness/implementation-evidence.json` until real implementation tests have run.
 
 ## Important
 

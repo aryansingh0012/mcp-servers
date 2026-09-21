@@ -17,7 +17,7 @@ Complete steps 1-4 and remove all `[DRAFT]` markers before writing any productio
 2. Explain system boundaries and significant technical choices in `03-architecture.md`.
 3. Convert the architecture into ordered work in `04-plan.yaml` and `05-tasks/`.
 4. Remove draft/review markers only after the artifacts are consistent and reviewed.
-5. Store actual implementation evidence in `harness/run.json` before review.
+5. Store actual implementation evidence in `harness/implementation-evidence.json` before review.
 
 ## End-to-End Workflow Checklist
 

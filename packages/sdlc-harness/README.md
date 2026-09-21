@@ -298,13 +298,12 @@ Expected issue workspace under default stage root:
   08-loopback-log.md
   harness/
     implementation-evidence.json
-    run.json
 ```
 
 Notes:
 
-1. harness/run.json is required for review stage completeness checks.
-2. check_stage_completeness for review fails without harness/run.json.
+1. harness/implementation-evidence.json is required for review stage completeness checks.
+2. check_stage_completeness for review fails without harness/implementation-evidence.json.
 3. Markdown artifacts include SPDX and YAML frontmatter links.
 4. Plan artifact is YAML, not Markdown.
 

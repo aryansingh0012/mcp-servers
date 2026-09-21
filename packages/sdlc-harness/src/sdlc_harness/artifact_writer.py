@@ -40,7 +40,7 @@ STAGE_REQUIREMENTS = {
         "03-architecture.md",
         "04-plan.yaml",
         "05-tasks/",
-        "harness/run.json",
+        "harness/implementation-evidence.json",
     ],
 }
 _SPDX_TAG = "SPDX-License-Identifier"

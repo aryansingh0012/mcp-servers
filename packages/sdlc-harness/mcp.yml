@@ -13,7 +13,7 @@
 
 name: sdlc-harness
 version: 0.1.0
-description: MCP server for SDLC lifecycle management and sphinx-needs traceability
+description: MCP server for SDLC lifecycle management and Sphinx-needs progress reporting
 entry_point: sdlc_harness.serve
 tools:
   - name: record_implementation_evidence
@@ -73,16 +73,6 @@ tools:
           type: string
           default: .stage
       required: [issue_id, title, requirement]
-  - name: trace_need
-    description: Return a sphinx-needs trace chain, including linked needs and reverse references.
-    input_schema:
-      type: object
-      properties:
-        need_id:
-          type: string
-        needs_json_path:
-          type: string
-      required: [need_id, needs_json_path]
   - name: write_stage_artifact
     description: Write a numbered requirement, specification, architecture, plan, or task artifact.
     input_schema:
