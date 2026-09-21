@@ -11,15 +11,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.6
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
+import sys
+from pathlib import Path
 
-  - repo: https://codeberg.org/fsfe/reuse-tool
-    rev: v6.2.0
-    hooks:
-      - id: reuse-lint-file
+SRC = Path(__file__).resolve().parents[1] / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
