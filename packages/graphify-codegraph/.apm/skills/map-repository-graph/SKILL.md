@@ -85,12 +85,14 @@ wm.initialize_session(
     goal="Understand authentication flow",
     subgoals=["Find auth entry points", "Trace to database"],
 )
+# Returns {"session_id": "...", "setup": {"ok": ..., ...}}
 
 # Query the graph via working memory
 auth_nodes = wm.query_graph("All functions related to authentication")
+# Returns {"query": "...", "matches": [...], "setup": {...}}
 # ↓ Delegates to graphify-codegraph MCP
 # ↓ Reads graphify-out/graph.json
-# ↓ Returns relevant symbols + files
+# ↓ The matches entry contains relevant symbols + files
 
 # Use results to guide file reads
 wm.record_decision(

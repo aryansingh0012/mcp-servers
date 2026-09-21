@@ -20,7 +20,8 @@ description: Use context-discipline MCP tools to track goals, assumptions, and d
 
 Use the `context-discipline` MCP tools to track your session explicitly without custom YAML maintenance.
 
-Simple, self-contained implementation. Works standalone. Designed to integrate with Phase 2 LocalObservationManager without breaking changes.
+Simple, self-contained implementation. Works standalone. Session records and
+durable context overlays are stored locally.
 
 ## When to invoke
 
@@ -45,13 +46,15 @@ wm.initialize_session(
     ],
     assumptions=["auth.py is the only auth module"],
 )
+# Returns {"session_id": "...", "setup": {"ok": ..., ...}}
 ```
 
 ### Record compressed findings
 
 ```python
 # After each tool call, record (COMPRESS to 1-2 sentences)
-wm.query_graph("All functions in lib/auth.py")
+graph_result = wm.query_graph("All functions in lib/auth.py")
+# Returns {"query": "...", "matches": [...], "setup": {...}}
 ```
 
 ### Track assumptions
@@ -82,7 +85,7 @@ if unverified:
 
 ```python
 # Document what you decide and why (with reversibility)
-wm.record_decision(
+decision_result = wm.record_decision(
     decision="Implement async in auth.py first, then update callers",
     reason=[
         "Minimizes risk of partial refactoring",
@@ -90,7 +93,12 @@ wm.record_decision(
         "Can test refactored functions independently",
     ],
     reversible=True,
+    grounded_nodes=["auth.py", "auth_module"],
 )
+# Returns {"unresolved_nodes": []}
+# Grounded nodes accept repo-relative source paths or canonical graph node IDs.
+# Non-empty unresolved_nodes entries do not contribute to retrieval; restate
+# them as real paths or graph IDs.
 ```
 
 ### Update progress
@@ -125,7 +133,7 @@ if unverified:
 The six MCP tools are the complete current API: `initialize_session`,
 `query_graph`, `record_decision`, `record_outcome`, `get_working_memory`, and
 `get_unverified_assumptions`. Working memory is held for the running server
-session; completed outcomes are persisted to `.score-local/observations.jsonl`.
+session; collaboration records are persisted to `.score-local/sessions.jsonl`.
 
 ## Automatic Benefits
 
@@ -134,4 +142,4 @@ session; completed outcomes are persisted to `.score-local/observations.jsonl`.
 - ✅ **Fast queries** — O(1) lookups via session index
 - ✅ **Importance/coverage filtering** — Automatic signal vs. noise detection
 - ✅ **No maintenance burden** — Simple Python class, no YAML to maintain
-- ✅ **Global learning ready** — Integrates with Phase 2 experience aggregation
+- ✅ **Intersession retrieval** — Reuses relevant reasoning from prior sessions
