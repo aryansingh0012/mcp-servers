@@ -13,7 +13,7 @@
 
 name: sdlc-harness
 version: 0.1.0
-description: MCP server for SDLC lifecycle management and Sphinx-needs progress reporting
+description: MCP server for SDLC lifecycle management and implementation progress reporting
 entry_point: sdlc_harness.serve
 tools:
   - name: record_implementation_evidence
@@ -38,8 +38,8 @@ tools:
         issue_id: {type: string}
         stage_dir: {type: string, default: .stage}
       required: [issue_id]
-  - name: write_sphinx_progress_report
-    description: Write an RST progress report with a task table and sphinx-needs needflow.
+  - name: write_progress_report
+    description: Write an RST progress report with a task table and linked requirement IDs.
     input_schema:
       type: object
       properties:

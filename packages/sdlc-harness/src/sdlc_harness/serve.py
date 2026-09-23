@@ -30,7 +30,7 @@ if __package__ in {None, ""}:
     from sdlc_harness.implementation_tracking import (
         assess_implementation_progress,
         record_implementation_evidence,
-        write_sphinx_progress_report,
+        write_progress_report,
     )
     from sdlc_harness.loopback import record_loopback
 else:
@@ -43,7 +43,7 @@ else:
     from .implementation_tracking import (
         assess_implementation_progress,
         record_implementation_evidence,
-        write_sphinx_progress_report,
+        write_progress_report,
     )
     from .loopback import record_loopback
 
@@ -96,9 +96,9 @@ TOOLS = [
         },
     },
     {
-        "name": "write_sphinx_progress_report",
+        "name": "write_progress_report",
         "description": (
-            "Write an RST progress report with a task table and sphinx-needs needflow."
+            "Write an RST progress report with a task table and linked requirement IDs."
         ),
         "inputSchema": {
             "type": "object",
@@ -189,8 +189,8 @@ def call_tool(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         return assess_implementation_progress(
             arguments["issue_id"], arguments.get("stage_dir", ".stage")
         )
-    if name == "write_sphinx_progress_report":
-        return write_sphinx_progress_report(
+    if name == "write_progress_report":
+        return write_progress_report(
             arguments["issue_id"],
             arguments["report_path"],
             arguments.get("stage_dir", ".stage"),
