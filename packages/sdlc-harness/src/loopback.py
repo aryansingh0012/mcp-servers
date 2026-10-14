@@ -16,7 +16,7 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from .artifact_writer import issue_directory
+from artifact_writer import issue_directory
 
 VALID_STAGES = {"requirement", "specification", "architecture", "plan", "task"}
 REVIEW_MARKER = "<!-- SDLC-HARNESS: review required -->"

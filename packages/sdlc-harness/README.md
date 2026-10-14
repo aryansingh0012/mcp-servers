@@ -38,8 +38,7 @@ packages/sdlc-harness/
       write-stage-artifact/SKILL.md
       track-implementation-progress/SKILL.md
       detect-loopback/SKILL.md
-  src/sdlc_harness/
-    __init__.py
+  src/
     serve.py
     artifact_writer.py
     implementation_tracking.py
@@ -48,7 +47,7 @@ packages/sdlc-harness/
 
 ## Runtime Architecture
 
-1. MCP host starts src/sdlc_harness/serve.py over stdio.
+1. MCP host starts src/serve.py over stdio.
 2. The server receives newline-delimited JSON-RPC requests.
 3. tools/list exposes the tool catalog.
 4. tools/call routes to local Python functions.
@@ -73,21 +72,18 @@ Declares the MCP tool contract as schema metadata for APM consumers.
 
 Key points:
 
-1. entry_point is sdlc_harness.serve.
+1. entry_point is serve.
 2. Seven tools are declared.
 3. Schemas define required fields and enum constraints.
 
-### src/sdlc_harness/__init__.py
 
-Package marker and package docstring.
-
-### src/sdlc_harness/serve.py
+### src/serve.py
 
 MCP stdio transport implementation and dispatcher.
 
 Important behavior:
 
-1. Supports both direct file execution and package-module execution.
+1. Supports direct file execution from the src directory.
 2. Defines TOOLS metadata surfaced by tools/list.
 3. Implements JSON-RPC methods initialize, tools/list, tools/call.
 4. Converts tool exceptions KeyError, OSError, ValueError into JSON-RPC error code -32000.
@@ -108,7 +104,7 @@ Handles protocol-level dispatch and tool invocation wrapping.
 4. main()
 Reads stdin line by line and writes responses to stdout.
 
-### src/sdlc_harness/artifact_writer.py
+### src/artifact_writer.py
 
 Handles artifact creation, stage completeness checks, SDLC bootstrap, and content quality assessment.
 
@@ -193,7 +189,7 @@ Converts status results into human-readable blocking findings.
 7. _section_content
 Regex-based section extractor for Markdown heading blocks.
 
-### src/sdlc_harness/implementation_tracking.py
+### src/implementation_tracking.py
 
 Records task evidence and computes implementation progress metrics.
 
@@ -237,7 +233,7 @@ Builds issue findings from evidence and test statuses.
 3. _percentage
 Rounded completion percentage.
 
-### src/sdlc_harness/loopback.py
+### src/loopback.py
 
 Records implementation-discovered SDLC loopbacks.
 
@@ -380,7 +376,7 @@ Quick stdio MCP handshake test:
 
 ```powershell
 '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' |
-  uv run python packages/sdlc-harness/src/sdlc_harness/serve.py
+  uv run python packages/sdlc-harness/src/serve.py
 ```
 
 ## License

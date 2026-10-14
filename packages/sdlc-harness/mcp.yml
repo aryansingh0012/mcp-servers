@@ -14,7 +14,7 @@
 name: sdlc-harness
 version: 0.1.0
 description: MCP server for SDLC lifecycle management and implementation progress reporting
-entry_point: sdlc_harness.serve
+entry_point: serve
 tools:
   - name: record_implementation_evidence
     description: Link a task to requirement IDs, source files, and real test results.

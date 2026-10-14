@@ -15,8 +15,8 @@ import json
 from pathlib import Path
 
 import pytest
-from sdlc_harness.artifact_writer import write_stage_artifact
-from sdlc_harness.implementation_tracking import record_implementation_evidence
+from artifact_writer import write_stage_artifact
+from implementation_tracking import record_implementation_evidence
 
 
 def _make_task(stage_dir: str, issue_id: str = "issue-1") -> str:

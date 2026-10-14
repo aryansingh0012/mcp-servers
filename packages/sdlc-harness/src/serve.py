@@ -16,36 +16,20 @@
 
 import json
 import sys
-from pathlib import Path
 from typing import Any
 
-if __package__ in {None, ""}:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from sdlc_harness.artifact_writer import (
-        assess_sdlc_issue,
-        bootstrap_sdlc_issue,
-        check_stage_completeness,
-        write_stage_artifact,
-    )
-    from sdlc_harness.implementation_tracking import (
-        assess_implementation_progress,
-        record_implementation_evidence,
-        write_progress_report,
-    )
-    from sdlc_harness.loopback import record_loopback
-else:
-    from .artifact_writer import (
-        assess_sdlc_issue,
-        bootstrap_sdlc_issue,
-        check_stage_completeness,
-        write_stage_artifact,
-    )
-    from .implementation_tracking import (
-        assess_implementation_progress,
-        record_implementation_evidence,
-        write_progress_report,
-    )
-    from .loopback import record_loopback
+from artifact_writer import (
+    assess_sdlc_issue,
+    bootstrap_sdlc_issue,
+    check_stage_completeness,
+    write_stage_artifact,
+)
+from implementation_tracking import (
+    assess_implementation_progress,
+    record_implementation_evidence,
+    write_progress_report,
+)
+from loopback import record_loopback
 
 TOOLS = [
     {

@@ -14,7 +14,7 @@
 from pathlib import Path
 
 import pytest
-from sdlc_harness.artifact_writer import (
+from artifact_writer import (
     check_stage_completeness,
     issue_directory,
     write_stage_artifact,

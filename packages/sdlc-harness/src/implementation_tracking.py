@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .artifact_writer import issue_directory
+from artifact_writer import issue_directory
 
 EVIDENCE_FILENAME = "implementation-evidence.json"
 VALID_STATUSES = {"completed", "blocked", "failed", "in_progress"}

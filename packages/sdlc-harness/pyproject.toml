@@ -15,7 +15,7 @@ description = "Traceable SDLC lifecycle and implementation progress MCP server"
 requires-python = ">=3.11"
 
 [project.scripts]
-sdlc-harness = "sdlc_harness.serve:main"
+sdlc-harness = "serve:main"
 
 [tool.hatch.build.targets.wheel]
 only-include = ["src"]
